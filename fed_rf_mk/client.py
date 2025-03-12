@@ -40,8 +40,9 @@ class FLClient:
         self.dataParams = {}
         self.modelParams = {}
         self.fl_epochs = 3
+        self.model_parameters_history = {}
     
-    def add_train_client(self, name, url, email, password, weight):
+    def add_train_client(self, name, url, email, password, weight = None):
         try:
             client = sy.login(email=email, password=password, url=url)
             self.datasites[name] = client
@@ -146,6 +147,25 @@ class FLClient:
 
         all_estimators = []  # To store estimators from all silos in epoch 1
         modelParams_history = {}
+
+        num_clients = len(self.weights)
+        none_count = sum(1 for w in self.weights.values() if w is None)
+
+        if none_count == num_clients:  
+            # **Case 1: All weights are None → Assign equal weights**
+            equal_weight = 1 / num_clients
+            self.weights = {k: equal_weight for k in self.weights}
+            print(f"All weights were None. Assigning equal weight: {equal_weight}")
+
+        elif none_count > 0:
+            # **Case 2: Some weights are None → Distribute remaining weight proportionally**
+            defined_weights_sum = sum(w for w in self.weights.values() if w is not None)
+            undefined_weight_share = (1 - defined_weights_sum) / none_count
+
+            self.weights = {
+                k: (undefined_weight_share if w is None else w) for k, w in self.weights.items()
+            }
+            print(f"Some weights were None. Distributing remaining weight: {self.weights}")
 
         for epoch in range(self.fl_epochs):
             print(f"\nEpoch {epoch + 1}/{self.fl_epochs}")
@@ -281,5 +301,3 @@ def ml_experiment(data: DataFrame, dataParams: dict, modelParams: dict) -> dict:
 
     return {"model": cloudpickle.dumps(clf), "n_base_estimators": modelParams["n_base_estimators"], "n_incremental_estimators": modelParams["n_incremental_estimators"], "train_size": modelParams["train_size"], "sample_size": len(training_data[0]), "test_size": modelParams["test_size"]}
 
-def hello_world():
-    print("FedLearning RF is installed!")

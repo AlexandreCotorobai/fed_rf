@@ -8,7 +8,7 @@ with open(path.join(working_dir, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='fed_rf_mk',
-    version='0.0.1',
+    version='0.0.2',
     author='Alexandre Cotorobai',
     author_email='alexandrecotorobai@ua.pt',
     description='A federated Random Forest implementation',

@@ -11,42 +11,6 @@ from time import sleep
 from typing import Optional
 import pandas as pd
 
-# DATASITE_PORTS = {name: (54879 + i) for i, name in enumerate(NAMES)}
-# DATASITE_URLS = {
-#     name: f"http://localhost:{port}" for name, port in DATASITE_PORTS.items()
-# }
-# INSTITUTE_FULLNAMES = {
-#     CLEVELAND: "Clevelan Clinic, Ohio (USA)",
-#     SWITZERLAND: "University Hospitals of Zurich and Basel (Switzerland)",
-#     HUNGARY: "Hungarian Institute of Cardiology, Budapest (Hungary)",
-#     LONG_BEACH: "Veteran Administration Medical Center, Long Beach, California (USA)",
-# }
-
-# DATASITE_PATHS = [
-#     {
-#         "name": "silo1",
-#         "port": 8080,
-#         "data_path": "train_datasets/train_datasets/Task1/part_1.csv",
-#         "mock_path": "train_datasets/train_datasets/Task1/synthetic_data500.csv"
-#     },
-#     {
-#         "name": "silo2",
-#         "port": 8081,
-#         "data_path": "train_datasets/train_datasets/Task1/part_2.csv",
-#         "mock_path": "train_datasets/train_datasets/Task1/synthetic_data500.csv"
-#     },
-#     {
-#         "name": "silo3",
-#         "port": 8082,
-#         "data_path": "train_datasets/train_datasets/Task1/part_3.csv",
-#         "mock_path": "train_datasets/train_datasets/Task1/synthetic_data500.csv"
-#     },
-# ]
-
-# DATASITE_URLS = {
-#     ds["name"]: f"http://localhost:{ds['port']}" for ds in DATASITE_PATHS
-# }
-
 def create_syft_dataset(name: str, data_path: str, mock_path: str) -> Optional[sy.Dataset]:
     """Creates a new syft.Dataset for the selected datasite/dataset.
     None is returned is the matching dataset cannot be found/load from disk.
@@ -62,7 +26,6 @@ def create_syft_dataset(name: str, data_path: str, mock_path: str) -> Optional[s
     if mock_path is not None:
         mock = pd.read_csv(mock_path)
     else:
-        return None
         mock = generate_mock(data)
 
     dataset = sy.Dataset(

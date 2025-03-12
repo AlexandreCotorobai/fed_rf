@@ -30,61 +30,6 @@ def requests_accepted(datasites: dict[str, sy.DatasiteClient]) -> list[bool]:
     """display status message of last code request sent to each datasite"""
     return [dsite.code[-1].status.approved for dsite in datasites.values()]
 
-
-def get_model_file(datasite_name: str) -> str:
-    return f"{datasite_name.replace('.', '').replace(' ', '_').lower()}_model.jbl"
-
-
-def dump_model(
-    datasite_name: str, model_buffer: BytesIO, root: str = "./models"
-) -> str:
-    """Store a serialised ml model in a BytesIO buffer into a binary file on disk"""
-    model_folder = Path(root)
-    model_folder.mkdir(exist_ok=True)
-
-    filename = get_model_file(datasite_name=datasite_name)
-    filepath = model_folder / filename
-    with open(filepath, "wb") as model_file:
-        model_file.write(model_buffer.getbuffer())
-
-    return f"Model saved in {filepath}"
-
-
-def load_model(model_filepath: Union[str, Path]) -> BaseEstimator:
-    with open(model_filepath, "rb") as model_file:
-        return joblib.load(model_file)
-
-
-def load_model_from_buffer(model_buffer: BytesIO):
-    """Load model into memory from Joblib BytesIO buffer"""
-    model_buffer.seek(0)
-    return joblib.load(model_buffer)
-
-
-def load_models(
-    datasites: dict[str, sy.DatasiteClient], root: str = "./models"
-) -> dict[str, BaseEstimator]:
-    model_folder = Path(root)
-    models = {}
-    for name in datasites:
-        filename = get_model_file(datasite_name=name)
-        filepath = model_folder / filename
-        models[name] = load_model(filepath)
-    return models
-
-
-def serialize_and_upload(
-    model: BaseEstimator, to: sy.DatasiteClient
-) -> sy.ActionObject:
-    """Serialise and upload an ML model to a target the datasite"""
-
-    model_buffer = BytesIO()
-    joblib.dump(model, model_buffer)
-    model_buffer.seek(0)
-    model_action_object = sy.ActionObject.from_obj(model_buffer)
-    return model_action_object.send(to)
-
-
 def plot_all_confusion_matrices(cms, title: str = None):
     fig, axes = plt.subplots(2, 2, figsize=(10, 8), sharey="row")
 
