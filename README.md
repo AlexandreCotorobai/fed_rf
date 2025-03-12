@@ -28,8 +28,8 @@ pip install fed_rf_mk
 ### Installing from Source
 
 ```bash
-git clone https://github.com/yourusername/fed_rf_mk.git
-cd fed_rf_mk
+git clone https://github.com/AlexandreCotorobai/fed_rf.git
+cd fed_rf
 pip install -e .
 ```
 
@@ -39,20 +39,8 @@ pip install -e .
 
 There are multiple ways to launch PySyft servers, each representing a data silo with its local dataset:
 
-#### Option 1: Use the provided server module
 
-```bash
-# Launch server 1
-python -m fed_rf_mk.server --name silo1 --port 8080 --data_path path/to/data1.csv
-
-# Launch server 2
-python -m fed_rf_mk.server --name silo2 --port 8081 --data_path path/to/data2.csv
-
-# Launch evaluation server
-python -m fed_rf_mk.server --name silo3 --port 8082 --data_path path/to/data3.csv
-```
-
-#### Option 2: Create a custom launcher script
+#### Option 1: Create a custom launcher script
 
 Create a `main.py` file:
 
@@ -79,7 +67,7 @@ Then run it:
 python main.py --name silo1 --port 8080 --data_path path/to/data1.csv
 ```
 
-#### Option 3: Launch programmatically in your code
+#### Option 2: Launch programmatically in your code
 
 ```python
 from fed_rf_mk.server import launch_datasite
