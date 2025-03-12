@@ -39,7 +39,6 @@ class FLClient:
         self.weights = {}
         self.dataParams = {}
         self.modelParams = {}
-        self.fl_epochs = 3
         self.model_parameters_history = {}
     
     def add_train_client(self, name, url, email, password, weight = None):
@@ -167,8 +166,8 @@ class FLClient:
             }
             print(f"Some weights were None. Distributing remaining weight: {self.weights}")
 
-        for epoch in range(self.fl_epochs):
-            print(f"\nEpoch {epoch + 1}/{self.fl_epochs}")
+        for epoch in range(self.modelParams["fl_epochs"]):
+            print(f"\nEpoch {epoch + 1}/{self.modelParams['fl_epochs']}")
 
             for name, datasite in self.datasites.items():
                 data_asset = datasite.datasets[0].assets[0]
@@ -300,6 +299,7 @@ def ml_experiment(data: DataFrame, dataParams: dict, modelParams: dict) -> dict:
     clf = train(clf, training_data)
 
     return {"model": cloudpickle.dumps(clf), "n_base_estimators": modelParams["n_base_estimators"], "n_incremental_estimators": modelParams["n_incremental_estimators"], "train_size": modelParams["train_size"], "sample_size": len(training_data[0]), "test_size": modelParams["test_size"]}
+
 
 def hello_world():
     print("FedLearning RF is installed!")
